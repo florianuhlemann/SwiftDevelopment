@@ -20,12 +20,8 @@ let drop = Droplet()
 
 // define REST interfaces for Alexa
 drop.get("hello") { request in
+    AlexaSwift.sharedInstance.getAccessToken()
     return "Hello, world!"
-}
-
-drop.get("accesstoken") { request in
-    
-    return "test"
 }
 
 // initiate server
