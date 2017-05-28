@@ -11,3 +11,10 @@ cd AlexaSwift
 swift build
 sudo ./.build/debug/AlexaSwift
 ```
+## Currently Implemented
+- Battery Range Query
+- Language Support for de-DE and en-US
+
+## Future Implementations
+- Activate AC with or without temperature value
+- Query whether the vehicle is locked
