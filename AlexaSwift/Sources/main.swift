@@ -2,8 +2,7 @@ import Foundation
 import Vapor
 
 
-print("AlexaSwift v0.0.1 Server started...")
-let squeue = DispatchQueue(label: "squeue.AlexaSwift")
+print("AlexaSwift v0.1.0 Server started...")
 
 
 // Init application for single-owner use.
@@ -12,9 +11,11 @@ if AlexaSwift.sharedInstance.email == nil, AlexaSwift.sharedInstance.password ==
     AlexaSwift.sharedInstance.email = readLine(strippingNewline: true)
     print("Please enter your password: ", terminator: "")
     AlexaSwift.sharedInstance.password = readLine(strippingNewline: true)
-    print("Your eMail and password have been successfully set.")
+    print("Please enter your Alexa UserID: ", terminator: "")
+    AlexaSwift.sharedInstance.alexaUserId = readLine(strippingNewline: true)!
+    print("Your eMail, password and user ID have been successfully set.")
 } else {
-	print("WARNING: eMail or password have already been set.")
+    print("WARNING: eMail or password have already been set.")
 }
 
 
@@ -22,18 +23,35 @@ if AlexaSwift.sharedInstance.email == nil, AlexaSwift.sharedInstance.password ==
 let drop = Droplet()
 
 
-// define REST interfaces for Alexa
-drop.get("json") { request in
-    if let myJson = AlexaSwift.sharedInstance.getJsonResponse(responseType: .batteryRequest) {
-    	return myJson
-    } else {
-    	return "ERROR"
-	}
+// define API interface for JSON POST requests
+drop.post("") { request in
+    if let contentType = request.headers["Content-Type"], contentType.contains("application/json"), let bytes = request.body.bytes {
+        let json = try JSON(bytes: bytes)
+        if let myUserId = json["session"]?["user"]?["userId"]?.string {
+            if myUserId == AlexaSwift.sharedInstance.alexaUserId {
+                if let intentName = json["request"]?["intent"]?["name"]?.string {
+                    guard let localeString = json["request"]?["locale"]?.string else { return AlexaSwift.sharedInstance.getJsonResponse(responseType: .unknownRequest, language: .enUS)! }
+                    var language = AlexaSwift.ReponseLanguage.enUS
+                    if localeString == "de-DE" { language = AlexaSwift.ReponseLanguage.deDE }
+                    switch intentName {
+                        case "GetBatteryState":
+                            if let myJsonResponse = AlexaSwift.sharedInstance.getJsonResponse(responseType: .batteryRequest, language: language) {
+                                return myJsonResponse
+                            } else { return AlexaSwift.sharedInstance.getJsonResponse(responseType: .noData, language: language)! }
+                        case "ActivateAC":
+                            if let myJsonResponse = AlexaSwift.sharedInstance.getJsonResponse(responseType: .temperatureRequest, language: language) {
+                                return myJsonResponse
+                            } else { return AlexaSwift.sharedInstance.getJsonResponse(responseType: .noCommandResponse, language: language)! }
+                        default:
+                            return AlexaSwift.sharedInstance.getJsonResponse(responseType: .unknownRequest, language: language)!
+                    }
+                }
+            }
+        }
+    }
+    return ""
 }
 
 
 // initiate server
 drop.run()
-
-
-//squeue.async { print(AlexaSwift.sharedInstance.getBatteryStatus!) }
