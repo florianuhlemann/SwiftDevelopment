@@ -6,8 +6,8 @@ This project provides a basic backend to support the Tesla API via Amazon Alexa 
 After you downloaded the github, make sure that you have a fully working swift setup on your machine.
   
 Run the following commands to get started:
-
-
+```bash
 cd AlexaSwift
 swift build
 sudo ./.build/debug/AlexaSwift
+´´
