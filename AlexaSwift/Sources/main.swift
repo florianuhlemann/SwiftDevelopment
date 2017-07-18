@@ -1,5 +1,8 @@
 import Foundation
 import Vapor
+import HTTP
+
+HTTP.defaultServerTimeout = 60*60
 
 
 print("AlexaSwift v0.1.0 Server started...")

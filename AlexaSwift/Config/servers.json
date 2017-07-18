@@ -1,6 +1,14 @@
 {
-  "http": {
-    "host": "127.0.0.1",
-    "port": 8080
-  }
+    "secure": {
+        "port": "8888",
+        "host": "127.0.0.1",
+        "securityLayer": "tls",
+        "tls": {
+            "verifyHost": true,
+            "certificates": "files",
+            "certificateFile": "/etc/letsencrypt/live/evjo.in/fullchain.pem",
+            "privateKeyFile": "/etc/letsencrypt/live/evjo.in/privkey.pem",
+            "signature": "selfSigned"
+        }
+    }
 }
