@@ -2,6 +2,7 @@ import Foundation
 import Vapor
 import HTTP
 
+
 HTTP.defaultServerTimeout = 60*60
 
 
@@ -52,6 +53,10 @@ drop.post("") { request in
             }
         }
     }
+    return ""
+}
+
+drop.get("") { request in
     return ""
 }
 
