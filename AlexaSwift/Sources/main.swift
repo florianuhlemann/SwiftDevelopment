@@ -1,6 +1,19 @@
 import Foundation
 import Vapor
+import TLS
 import HTTP
+
+
+let config = try TLS.Config(
+    mode: .server,
+    certificates: .files(
+        certificateFile: "/etc/letsencrypt/live/evjo.in/fullchain.pem", 
+        privateKeyFile: "/etc/letsencrypt/live/evjo.in/privkey.pem", 
+        signature: .selfSigned
+    ),
+    verifyHost: true,
+    verifyCertificates: true
+)
 
 
 HTTP.defaultServerTimeout = 60*60
@@ -62,4 +75,6 @@ drop.get("") { request in
 
 
 // initiate server
-drop.run()
+drop.run(servers: [
+    "secure": ("vapor.codes", 8888, .tls(config))
+])
