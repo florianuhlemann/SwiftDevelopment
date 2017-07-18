@@ -76,5 +76,5 @@ drop.get("") { request in
 
 // initiate server
 drop.run(servers: [
-    "secure": ("vapor.codes", 8888, .tls(config))
+    "secure": ("127.0.0.1", 8888, .tls(config))
 ])
