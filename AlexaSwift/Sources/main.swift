@@ -63,4 +63,10 @@ drop.get("") { request in
 
 
 // initiate server
+<<<<<<< HEAD
 drop.run()
+=======
+drop.run(servers: [
+    "secure": ("127.0.0.1", 8888, .tls(config))
+])
+>>>>>>> 5f178b6847b9652c0b2e7247b01cd2c7ca3a39e0
